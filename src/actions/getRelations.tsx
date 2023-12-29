@@ -16,8 +16,7 @@ const headers = {
     "sec-ch-ua": 'Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
     "sec-ch-ua-mobile": "?0",
     "sec-ch-ua-platform": "macOS",
-    "x-token":
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2MzNhYzI5ZGI5NzY3NjRlNjc5ZDg5M2YiLCJpYXQiOjE3MDM4NjM3MDcsImV4cCI6MTcwMzg2NTUwN30.S20bSh_1yHeAnSYhq9MatuTn6SVruKuumNTEguAoQl8",
+    //"x-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2MzNhYzI5ZGI5NzY3NjRlNjc5ZDg5M2YiLCJpYXQiOjE3MDM4NjM3MDcsImV4cCI6MTcwMzg2NTUwN30.S20bSh_1yHeAnSYhq9MatuTn6SVruKuumNTEguAoQl8",
 };
 
 export interface Relations {
@@ -28,9 +27,12 @@ export interface Relations {
     service: string;
 }
 
-export const getRelations = async (id: number) => {
+export const getRelations = async (id: number, token?: string) => {
+    if (globalThis._relations) return globalThis._relations;
+    if (token) globalThis._token = token;
+
     const resp = await fetch(`https://api.hospitaldeclinicas.uba.ar/api/appointments/resources/relation/${id}`, {
-        headers,
+        headers: { ...headers, "x-token": globalThis._token },
     });
 
     const data = await resp.json();
@@ -40,5 +42,6 @@ export const getRelations = async (id: number) => {
 
     relations = relations.filter((relation) => relation.medicName.includes("VESICULA"));
 
+    globalThis._relations = relations;
     return relations;
 };
