@@ -1,4 +1,6 @@
+import { auth } from "@/actions/auth";
 import { getRelations } from "@/actions/getRelations";
+import { Auth } from "@/components/auth";
 import { TableMedics } from "@/components/table";
 
 interface HomeProps {
@@ -7,7 +9,14 @@ interface HomeProps {
 
 export default async function Home({ searchParams }: HomeProps) {
     const { token } = searchParams;
-    const relations = await getRelations(44, token);
+    globalThis._token = token;
+    await auth();
 
-    return <TableMedics relations={relations} />;
+    const relations = await getRelations(44);
+
+    return (
+        <Auth>
+            <TableMedics relations={relations} />;
+        </Auth>
+    );
 }

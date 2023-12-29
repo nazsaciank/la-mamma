@@ -1,8 +1,9 @@
 "use client";
 import { getAppointment } from "@/actions/getAppointment";
 import { Relations } from "@/actions/getRelations";
+import { useAudio } from "@/hooks/use-audio";
 import { useLoading } from "@/hooks/use-loading";
-import { Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { Button, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
 
 interface TableProps {
@@ -20,13 +21,14 @@ export function TableMedics({ relations }: TableProps) {
     const [medics, setMedics] = useState<Medic[]>([]);
     const { loading, stopLoading } = useLoading(true);
     const interval = useRef<NodeJS.Timeout | null>(null);
+    const { play } = useAudio("song.mp3");
 
     useEffect(() => {
-        getMedics(relations);
-        interval.current = setInterval(() => getMedics(relations), 5000);
+        getMedics();
+        interval.current = setInterval(() => getMedics(), 5000);
     }, [relations]);
 
-    const getMedics = async (relations: Relations[]) => {
+    const getMedics = async () => {
         let medics: Medic[] = [];
         for await (const relation of relations) {
             let medic: Medic = {
@@ -35,6 +37,7 @@ export function TableMedics({ relations }: TableProps) {
                 status: "No Disponible",
                 date: new Date().toLocaleString(),
             };
+
             const appointment = await getAppointment(relation.id);
 
             let isTurnAvailable = false;
@@ -49,8 +52,9 @@ export function TableMedics({ relations }: TableProps) {
                 isTurnAvailable = true;
             }
             medics.push(medic);
+
             if (isTurnAvailable && interval.current) clearInterval(interval.current);
-            if (isTurnAvailable) break;
+            /* if (isTurnAvailable) play(4.7); */
         }
         setMedics(medics);
         if (loading) stopLoading();
@@ -58,7 +62,14 @@ export function TableMedics({ relations }: TableProps) {
 
     return (
         <div className='w-full max-w-[900px] h-screen flex flex-col justify-center items-center mx-auto'>
-            <h1 className='text-4xl mb-8'>Turnos</h1>
+            <div className='mb-4 text-center'>
+                <h1 className='text-4xl'>Disponibilidad de los Turnos</h1>
+                <p>Cuando haya Disponibilidad en algun turno se ejecutara un sonido para ir rapido a sacar el turno.</p>
+            </div>
+
+            <Button className='mb-4' onClick={() => play(4.7)}>
+                Probar Audio
+            </Button>
 
             <Table aria-labelledby='Table de turnos medicos'>
                 <TableHeader>
