@@ -1,10 +1,9 @@
 "use client";
 import { getAppointment } from "@/actions/getAppointment";
 import { Relations } from "@/actions/getRelations";
-import { useAudio } from "@/hooks/use-audio";
 import { useLoading } from "@/hooks/use-loading";
 import { Button, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface TableProps {
     relations: Relations[];
@@ -21,7 +20,9 @@ export function TableMedics({ relations }: TableProps) {
     const [medics, setMedics] = useState<Medic[]>([]);
     const { loading, stopLoading } = useLoading(true);
     const interval = useRef<NodeJS.Timeout | null>(null);
-    const { play } = useAudio("song.mp3");
+    const isMedicAvailable = useRef(false);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+    const [muted, setMuted] = useState(true);
 
     useEffect(() => {
         getMedics();
@@ -54,7 +55,13 @@ export function TableMedics({ relations }: TableProps) {
             medics.push(medic);
 
             if (isTurnAvailable && interval.current) clearInterval(interval.current);
-            /* if (isTurnAvailable) play(4.7); */
+            if (isTurnAvailable && !isMedicAvailable.current) {
+                isMedicAvailable.current = true;
+                const audio = audioRef.current;
+                if (!audio) return;
+                audio.currentTime = 4.7;
+                audio.play();
+            }
         }
         setMedics(medics);
         if (loading) stopLoading();
@@ -67,8 +74,18 @@ export function TableMedics({ relations }: TableProps) {
                 <p>Cuando haya Disponibilidad en algun turno se ejecutara un sonido para ir rapido a sacar el turno.</p>
             </div>
 
-            <Button className='mb-4' onClick={() => play(4.7)}>
-                Probar Audio
+            <audio ref={audioRef} id='audio' hidden muted={muted} src='song.mp3' />
+
+            <Button
+                className='mb-4'
+                onClick={() => {
+                    if (!audioRef.current) return;
+                    const audio = audioRef.current;
+                    audio.muted = !audio.muted;
+                    setMuted(audio.muted);
+                }}
+            >
+                {!muted ? "Desactivar Sonido" : "Activar Sonido"}
             </Button>
 
             <Table aria-labelledby='Table de turnos medicos'>
