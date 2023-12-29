@@ -57,7 +57,7 @@ export function TableMedics({ relations }: TableProps) {
     };
 
     return (
-        <div className='w-full max-w-[900px] h-screen flex flex-col justify-center items-center mx-auto text-content1-foreground'>
+        <div className='w-full max-w-[900px] h-screen flex flex-col justify-center items-center mx-auto'>
             <h1 className='text-4xl mb-8'>Turnos</h1>
 
             <Table aria-labelledby='Table de turnos medicos'>
