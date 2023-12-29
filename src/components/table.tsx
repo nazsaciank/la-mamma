@@ -57,10 +57,10 @@ export function TableMedics({ relations }: TableProps) {
     };
 
     return (
-        <div className='w-full max-w-[900px] h-screen flex flex-col justify-center items-center mx-auto'>
+        <div className='w-full max-w-[900px] h-screen flex flex-col justify-center items-center mx-auto text-content1-foreground'>
             <h1 className='text-4xl mb-8'>Turnos</h1>
 
-            <Table aria-labelledby='Table de consulta medica'>
+            <Table aria-labelledby='Table de turnos medicos'>
                 <TableHeader>
                     <TableColumn>ID</TableColumn>
                     <TableColumn>Nombre</TableColumn>
