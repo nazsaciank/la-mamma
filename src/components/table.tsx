@@ -71,7 +71,7 @@ export function TableMedics({ relations }: TableProps) {
         <div className='w-full max-w-[900px] h-screen flex flex-col justify-center items-center mx-auto'>
             <div className='mb-4 text-center'>
                 <h1 className='text-4xl'>Disponibilidad de los Turnos</h1>
-                <p>Cuando haya Disponibilidad en algun turno se ejecutara un sonido para ir rapido a sacar el turno.</p>
+                <p>Cuando haya Disponibilidad en algún turno se ejecuta un sonido para ir rápido a sacar el turno.</p>
             </div>
 
             <audio ref={audioRef} id='audio' hidden muted={muted} src='song.mp3' />
