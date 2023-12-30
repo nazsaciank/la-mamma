@@ -2,8 +2,18 @@
 import { getAppointment } from "@/actions/getAppointment";
 import { Relations } from "@/actions/getRelations";
 import { useLoading } from "@/hooks/use-loading";
-import { Button, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+    Button,
+    Chip,
+    LinkIcon,
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
+} from "@nextui-org/react";
+import { useEffect, useRef, useState } from "react";
 
 interface TableProps {
     relations: Relations[];
@@ -94,6 +104,7 @@ export function TableMedics({ relations }: TableProps) {
                     <TableColumn>Nombre</TableColumn>
                     <TableColumn>Estado</TableColumn>
                     <TableColumn>Fecha</TableColumn>
+                    <TableColumn>{null}</TableColumn>
                 </TableHeader>
                 <TableBody items={medics} isLoading={loading}>
                     {(medic) => (
@@ -110,6 +121,18 @@ export function TableMedics({ relations }: TableProps) {
                                 </Chip>
                             </TableCell>
                             <TableCell>{medic.date}</TableCell>
+                            <TableCell>
+                                <Button
+                                    as={"a"}
+                                    href='https://portal.hospitaldeclinicas.uba.ar/#/dashboard/myAppointment/myAppointmentSearch'
+                                    target='_blank'
+                                    isIconOnly
+                                    variant='flat'
+                                    radius='full'
+                                >
+                                    <LinkIcon />
+                                </Button>
+                            </TableCell>
                         </TableRow>
                     )}
                 </TableBody>
